@@ -58,6 +58,7 @@ app.route("/articles")
             })
     });
 
+    
 app.route("/articles/:searchTitle")
     //// using async/await for resolving the promise
     // .get(async(req, res) => {
