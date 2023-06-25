@@ -56,7 +56,60 @@ app.route("/articles")
             .catch(error => {
                 res.send(error);
             })
+    });
+
+app.route("/articles/:searchTitle")
+    //// using async/await for resolving the promise
+    // .get(async(req, res) => {
+    //     const searchTitle = req.params.searchTitle;
+    //     try {
+    //         const foundDocument = await Article.findOne({ title: searchTitle });
+    //         res.status(200).send(foundDocument);
+    //     } catch (err) {
+    //         res.status(500).send(err);
+    //     }
+    // })
+    .get((req, res) => {
+        Article.findOne({ title: req.params.searchTitle }) 
+            .then(foundDocument => {
+                res.status(200).send(foundDocument);
+            })
+            .catch(error => {
+                res.status(500).send(error);
+            });
     })
+    .put((req, res) => {
+        const updatedDocument = req.body;
+        // replaceOne instead of updateOne to make sure the document does not get patched
+        Article.replaceOne({ title: req.params.searchTitle }, updatedDocument)
+            .then(() => {
+                res.status(200).send("Article was replaced successfully.");
+            })
+            .catch(err => {
+                res.status(500).send(err);
+            });
+    })
+    .patch((req, res) => {
+        const updatedDocument = req.body;
+        Article.updateOne({ title: req.params.searchTitle }, updatedDocument)
+            .then(() => {
+                res.status(200).send("Article was updated/patched successfully.");
+            })
+            .catch(err => {
+                res.status(500).send(err);
+            });
+    })
+    .delete((req, res) => {
+        const searchTitle = req.params.searchTitle;
+        Article.deleteOne({ title: searchTitle })
+            .then(() => {
+                res.status(200).send(`Successfully deleted article with title ${searchTitle}`);
+            })
+            .catch(err => {
+                res.status(500).send(err);
+            })
+    })
+
 
 
 
